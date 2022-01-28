@@ -12,8 +12,6 @@ const Search = () => {
   const [results, setResults] = useState([]);
 
   /**** 렌더링 ****/
-  console.log(results);
-
 
   // 동작 타이밍 1) []     : 컴포넌트가 처음 렌더링 될 때
   // 동작 타이밍 2) 없음    : 컴포넌트가 처음 렌더링 될 때 + 렌더링 될 때마다
@@ -33,9 +31,6 @@ const Search = () => {
       });
       setResults(data.query.search);
     }
-    if (term)
-      search();
-
     /* 방법 2)
     (async () => {
       await axios.get('url');
@@ -47,7 +42,29 @@ const Search = () => {
         console.log(response.data);
       });
     */
-  }, [term]);
+  
+    if (term && !results.length) {
+      search();
+    } else {
+      const timeoutId = setTimeout(() => {
+        if (term) {
+          search();
+        }
+      }, 1000);
+  
+      return () => {
+        clearTimeout(timeoutId);
+      }
+    }
+    
+  }, [term]);  // useEffect 끝
+
+  /* 동작순서
+    - 첫 렌더링 시 useEffect에 전달된 setTimeout() 호출됨 
+        & return에 지정된 clearTimeout()를 리턴 (호출은 안함)
+    - term 상태 변경될 때 마다 return에 지정된 clearTimeout()가 먼저 동작 
+        & useEffect에 전달된 setTimeout()가 호출됨
+  */
 
   const renderedResults = results.map((result) => {
     return (
