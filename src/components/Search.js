@@ -9,13 +9,31 @@ const Search = () => {
    *   - 검색 기능을 onChange 이벤트와 분리하여 재사용하기 좋고, 파라미터에 따라 trigger 할 수 있도록 구현이 가능 
    *   - 변경되는 시점을 캐치하는 코드 작성 추가 필요 (useEffect)
    */
+  const [debouncedTerm, setDebouncedTerm] = useState(term);
   const [results, setResults] = useState([]);
 
-  /**** 렌더링 ****/
+  // useEffect 동작 타이밍 1) []     : 컴포넌트가 처음 렌더링 될 때
+  // useEffect 동작 타이밍 2) 없음    : 컴포넌트가 처음 렌더링 될 때 + 렌더링 될 때마다
+  // useEffect 동작 타이밍 3) [data] : 컴포넌트가 처음 렌더링 될 때 + 렌더링 될 때마다 + [..] 안의 어떤 데이터가 변경될 때마다
 
-  // 동작 타이밍 1) []     : 컴포넌트가 처음 렌더링 될 때
-  // 동작 타이밍 2) 없음    : 컴포넌트가 처음 렌더링 될 때 + 렌더링 될 때마다
-  // 동작 타이밍 3) [data] : 컴포넌트가 처음 렌더링 될 때 + 렌더링 될 때마다 + 어떤 데이터가 변경될 때마다
+  // 1. term 변경 시 마다 타이머 1초 재설정, 1초간 변경 없으면 term을 debouncedTerm에 셋팅
+  useEffect(() => {
+    /* 동작순서
+    - 첫 렌더링 시 useEffect에 전달된 setTimeout() 호출됨, debouncedTerm을 입력한 값으로 셋팅
+        & return에 지정된 clearTimeout()를 리턴 (호출은 안함)
+    - term 상태 변경될 때 마다 return에 지정된 clearTimeout()가 먼저 동작 
+        & useEffect에 전달된 setTimeout()가 호출됨, debouncedTerm을 입력한 값으로 셋팅
+    */
+    const timeoutId = setTimeout(() => {
+      setDebouncedTerm(term);  // 1초 지났을 시 debouncedTerm 상태를 변경
+    }, 1000);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [term]);
+
+  // 2. debouncedTerm 변경 시 마다 debouncedTerm으로 검색 API 호출
   useEffect(() => {
     // useEffect에 직접적으로 aysnc() 사용하지 못함
     /* 방법 1) */
@@ -26,7 +44,7 @@ const Search = () => {
           list: 'search',
           origin: '*',
           format: 'json',
-          srsearch: term
+          srsearch: debouncedTerm
         }
       });
       setResults(data.query.search);
@@ -42,29 +60,11 @@ const Search = () => {
         console.log(response.data);
       });
     */
-  
-    if (term && !results.length) {
-      search();
-    } else {
-      const timeoutId = setTimeout(() => {
-        if (term) {
-          search();
-        }
-      }, 1000);
-  
-      return () => {
-        clearTimeout(timeoutId);
-      }
-    }
     
-  }, [term]);  // useEffect 끝
+    search();
+  }, [debouncedTerm]);  // useEffect 끝
 
-  /* 동작순서
-    - 첫 렌더링 시 useEffect에 전달된 setTimeout() 호출됨 
-        & return에 지정된 clearTimeout()를 리턴 (호출은 안함)
-    - term 상태 변경될 때 마다 return에 지정된 clearTimeout()가 먼저 동작 
-        & useEffect에 전달된 setTimeout()가 호출됨
-  */
+  
 
   const renderedResults = results.map((result) => {
     return (
