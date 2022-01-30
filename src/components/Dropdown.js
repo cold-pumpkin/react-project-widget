@@ -1,12 +1,17 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const Dropdown = ({ options, selected, onSelectedChange }) => {
   const [open, setOpen] = useState(false);
+  const ref = useRef(); // DOM을 직접 참조할 수 있도록 해줌
   
   // 최초 렌더링 시 클릭 이벤트 리스너를 등록
   useEffect(() => {
-    document.body.addEventListener('click', () => {
-      console.log('click!');
+    document.body.addEventListener('click', (event) => {
+      // 1) Dropdown 컴포넌트 내부 클릭 이벤트 발생 시 닫히지 않도록 즉시 리턴
+      if (ref.current.contains(event.target))
+        return;
+
+      // 2) Dropdown 컴포넌트 외부 클릭 이벤트 발생 시 닫히도록 open 상태 false로 변경
       setOpen(false);
     }, 
     { capture: true }
