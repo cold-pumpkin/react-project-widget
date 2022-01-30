@@ -6,16 +6,21 @@ const Dropdown = ({ options, selected, onSelectedChange }) => {
   
   // 최초 렌더링 시 클릭 이벤트 리스너를 등록
   useEffect(() => {
-    document.body.addEventListener('click', (event) => {
+    const onBodyClick = (event) => {
       // 1) Dropdown 컴포넌트 내부 클릭 이벤트 발생 시 닫히지 않도록 즉시 리턴
       if (ref.current.contains(event.target))
         return;
 
       // 2) Dropdown 컴포넌트 외부 클릭 이벤트 발생 시 닫히도록 open 상태 false로 변경
       setOpen(false);
-    }, 
-    { capture: true }
-    )
+    };
+
+    document.body.addEventListener('click', onBodyClick, { capture: true });
+    
+    // 최초 렌더링 시 동작하지 않고, 이후 Dropdown 컴포넌트가 DOM에서 삭제되었을 때 호출되면서 클릭 이벤트 리스너 삭제
+    return () => {
+      document.body.removeEventListener('click', onBodyClick, { capture: true });
+    }
   }, []);
 
   const renderedOptions = options.map((option) => {
