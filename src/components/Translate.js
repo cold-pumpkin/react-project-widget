@@ -1,18 +1,27 @@
 import React, { useState } from 'react';
 import Dropdown from './Dropdown';
+import Convert from './Convert';
 
 const options = [
   {
-    label: 'Afrikaans',
-    value: 'af'
+    label: 'Korean',
+    value: 'ko'
   },
   {
-    label: 'Arabic',
-    value: 'ar'
+    label: 'Japanese',
+    value: 'ja'
   },
   {
-    label: 'Hindi',
-    value: 'hi'
+    label: 'English',
+    value: 'en'
+  },
+  {
+    label: 'Spanish',
+    value: 'es'
+  },
+  {
+    label: 'French',
+    value: 'fr'
   },
 ];
 
@@ -34,6 +43,9 @@ const Translate = () => {
         onSelectedChange={setLanguage}  // props 2) 선택 시 동작할 콜백 함수
         options={options}               // props 3) 선택 가능한 옵션 목록
       />
+      <hr />
+      <h3 className='ui header'>Output</h3>
+      <Convert language={language} text={text} />
     </div>
   )
 };
