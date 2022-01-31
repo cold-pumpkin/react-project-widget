@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Accordion from './components/Accordion';
 import Search from './components/Search';
 import Dropdown from './components/Dropdown';
+import Translate from './components/Translate';
 
 /* Accordion 컴포넌트로 전달할 아이템 목록
 const items = [
@@ -18,7 +19,7 @@ const items = [
     content: 'You use React by creating components'
   },
 ]
-*/
+
 
 // Dropdown 컴포넌트로 전달할 옵션 목록
 const options= [
@@ -35,25 +36,11 @@ const options= [
     value: 'blue'
   },
 ];
-
+*/
 const App = () => {
-  const [selected, setSelected] = useState(options[0]);
-  const [showDropdown , setShowDropdown] = useState(true);
-
   //return <div><Accordion items={items} /></div>;
   //return <div><Search /></div>;
-  return (
-    <div>
-    <button onClick={() => setShowDropdown(!showDropdown)}>Toggle Dropdown</button>
-    {showDropdown ?
-      <Dropdown 
-        selected={selected} 
-        onSelectedChange={setSelected}
-        options={options} />
-      : null
-    }
-    </div>
-  );
+  return <Translate />;
 }
 
 export default App;
