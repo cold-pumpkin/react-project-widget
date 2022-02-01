@@ -2,6 +2,13 @@ import React from 'react';
 
 const Link = ({ className, href, children }) => {
   const onClick = (event) => {
+    
+    if (event.metaKey || event.ctrlKey) {
+      // metaKey: MacOS cmd & ctrlKey: Windows ctrl
+      // 새탭에서 열리면서 reload
+      return;
+    }
+    
     // full page reload 발생하지 않도록 추가
     event.preventDefault();
     // URL 업데이트
