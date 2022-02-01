@@ -3,8 +3,9 @@ import Accordion from './components/Accordion';
 import Search from './components/Search';
 import Dropdown from './components/Dropdown';
 import Translate from './components/Translate';
+import Route from './components/Route';
 
-/* Accordion 컴포넌트로 전달할 아이템 목록
+// Accordion 컴포넌트로 전달할 아이템 목록
 const items = [
   {
     title: 'What is React?',
@@ -35,12 +36,42 @@ const options= [
     label: 'A Shade of Blue',
     value: 'blue'
   },
+  {
+    label: 'Very deep black',
+    value: 'black'
+  },
+  {
+    label: 'Snow white',
+    value: 'white'
+  }
 ];
-*/
+
+
 const App = () => {
-  //return <div><Accordion items={items} /></div>;
-  //return <div><Search /></div>;
-  return <Translate />;
+  const [selected, setSelected] = useState(options[0]);
+
+  return (
+    <div>
+      <Route path="/">
+        {/* Accordion이 Route의 children props으로 전달됨 */}
+        <Accordion items={items} />
+      </Route>
+      <Route path="/list">
+        <Search />
+      </Route>
+      <Route path="/dropdown">
+        <Dropdown 
+          label="Select a color"
+          options={options}
+          selected={selected}
+          onSelectedChange={setSelected}
+        />
+      </Route>
+      <Route path="/translate">
+        <Translate />
+      </Route>
+    </div>
+  );
 }
 
 export default App;
