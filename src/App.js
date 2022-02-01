@@ -4,6 +4,7 @@ import Search from './components/Search';
 import Dropdown from './components/Dropdown';
 import Translate from './components/Translate';
 import Route from './components/Route';
+import Header from './components/Header';
 
 // Accordion 컴포넌트로 전달할 아이템 목록
 const items = [
@@ -52,6 +53,7 @@ const App = () => {
 
   return (
     <div>
+      <Header />
       <Route path="/">
         {/* Accordion이 Route의 children props으로 전달됨 */}
         <Accordion items={items} />
